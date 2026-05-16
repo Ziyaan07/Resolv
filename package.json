@@ -4,9 +4,10 @@
   "description": "Centralized platform for corporate employees to report security hazards to an internal response team",
   "main": "src/server.js",
   "scripts": {
-    "start": "concurrently \"node src/server.js\" \"npx @tailwindcss/cli -i ./public/css/input.css -o ./public/css/styles.css --watch\"",
+    "start": "node src/server.js",
+    "build": "npm run build:css",
     "build:css": "npx @tailwindcss/cli -i ./public/css/input.css -o ./public/css/styles.css",
-    "dev": "node --watch src/server.js"
+    "dev": "concurrently \"node --watch src/server.js\" \"npx @tailwindcss/cli -i ./public/css/input.css -o ./public/css/styles.css --watch\""
   },
   "keywords": [
     "incident",

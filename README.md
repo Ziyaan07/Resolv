@@ -125,8 +125,7 @@ SE Project/
 ├── README.md              ← This file
 ├── package.json           ← Dependencies and npm scripts
 ├── .env                   ← Settings (port, JWT secret, Supabase keys)
-├── api.js                 ← Serverless entry point (for Vercel)
-├── vercel.json            ← Vercel deployment configuration
+
 ├── public/                ← Frontend (what you see in the browser)
 │   ├── index.html         ← Sign-in / Sign-up page
 │   ├── report.html        ← Employee reporting page
@@ -182,16 +181,17 @@ SE Project/
 
 ---
 
-## Deployment (Vercel)
+## Deployment (Render)
 
-This application is configured for seamless deployment to **Vercel** using Serverless Functions.
+This application is configured for seamless deployment to **Render.com** (or Railway/Heroku) as a standard Node.js Web Service.
 
-1. Connect your GitHub repository to Vercel.
-2. Under **Build and Output Settings**, set:
-   - **Build Command**: `npm run build:css`
-   - **Output Directory**: `public`
-3. Under **Environment Variables**, add `SUPABASE_URL`, `SUPABASE_KEY`, and `JWT_SECRET`.
-4. Click Deploy. Vercel will use `vercel.json` and `api.js` to automatically map your Express backend into a highly available serverless function!
+1. Create a new "Web Service" on Render and connect your GitHub repository.
+2. In the setup, ensure the following:
+   - **Environment:** `Node`
+   - **Build Command:** `npm install && npm run build`
+   - **Start Command:** `npm start`
+3. Add your Environment Variables (`SUPABASE_URL`, `SUPABASE_KEY`, `JWT_SECRET`).
+4. Click Deploy. Render will seamlessly install dependencies, compile the Tailwind CSS, and boot your Express server with full support for 50MB file uploads!
 
 ---
 
