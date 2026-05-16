@@ -4,7 +4,16 @@ const bcrypt = require('bcryptjs');
 const supabaseUrl = process.env.SUPABASE_URL || '';
 const supabaseKey = process.env.SUPABASE_KEY || '';
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+let supabase = null;
+try {
+  if (supabaseUrl && supabaseKey) {
+    supabase = createClient(supabaseUrl, supabaseKey);
+  } else {
+    console.warn("WARNING: SUPABASE_URL or SUPABASE_KEY is missing. Database operations will fail.");
+  }
+} catch (e) {
+  console.error("Failed to initialize Supabase:", e.message);
+}
 
 async function load() {
   if (!supabaseUrl || !supabaseKey) {
@@ -15,7 +24,7 @@ async function load() {
 async function seedDefaults() {
   if (!supabaseUrl || !supabaseKey) return;
 
-  // Check if users exist
+  if (!supabase) return;
   const { data: users, error: selectError } = await supabase.from('users').select('id').limit(1);
   if (selectError) {
     console.error('Error checking users in Supabase:', selectError);

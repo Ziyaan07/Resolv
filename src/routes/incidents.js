@@ -11,7 +11,12 @@ const { authenticate, requireRole } = require('../middleware/auth');
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 52428800 } });
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+const supabaseUrl = process.env.SUPABASE_URL || '';
+const supabaseKey = process.env.SUPABASE_KEY || '';
+let supabase = null;
+if (supabaseUrl && supabaseKey) {
+  supabase = createClient(supabaseUrl, supabaseKey);
+}
 
 const VALID_CATEGORIES = ['Physical Security', 'IT Security', 'Facilities', 'Other'];
 const VALID_SEVERITIES = ['Low', 'Medium', 'High', 'Critical'];
