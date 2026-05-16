@@ -1,0 +1,33 @@
+{
+  "name": "private-enterprise-incident-orchestrator",
+  "version": "1.0.0",
+  "description": "Centralized platform for corporate employees to report security hazards to an internal response team",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "concurrently \"node src/server.js\" \"npx @tailwindcss/cli -i ./public/css/input.css -o ./public/css/styles.css --watch\"",
+    "build:css": "npx @tailwindcss/cli -i ./public/css/input.css -o ./public/css/styles.css",
+    "dev": "node --watch src/server.js"
+  },
+  "keywords": [
+    "incident",
+    "enterprise",
+    "security"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.105.4",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^2.1.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.0",
+    "autoprefixer": "^10.5.0",
+    "concurrently": "^9.2.1",
+    "postcss": "^8.5.14",
+    "tailwindcss": "^4.3.0"
+  }
+}

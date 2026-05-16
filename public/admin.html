@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resolv — Orchestration Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="flex flex-col md:flex-row h-screen overflow-hidden bg-obsidian text-slate-200">
+
+  <!-- Sidebar overlay for mobile -->
+  <div id="sidebar-overlay" class="fixed inset-0 bg-black/60 z-40 md:hidden hidden" onclick="closeSidebar()"></div>
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="fixed md:static top-0 left-0 h-full z-50 w-72 md:w-64 glass-panel border-y-0 border-l-0 rounded-none flex flex-col pt-6 pb-4 -translate-x-full md:translate-x-0 transition-transform duration-300 shrink-0">
+    <div class="px-6 mb-8 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-electric flex items-center justify-center text-white font-bold shadow-[0_0_15px_rgba(59,130,246,0.5)]">R</div>
+        <span class="text-xl font-bold tracking-tight text-white">Resolv</span>
+      </div>
+      <button class="md:hidden text-slate-400 hover:text-white p-1" onclick="closeSidebar()">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+    </div>
+    
+    <nav class="flex-1 px-4 space-y-2">
+      <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-blue-500/10 text-electric font-medium border border-blue-500/20">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+        Dashboard
+      </a>
+      <a href="#users-directory-panel" class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/50 transition-colors">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+        Users
+      </a>
+    </nav>
+    
+    <div class="px-6 mt-auto">
+      <div class="flex items-center gap-3 py-3 border-t border-white/10 mt-4">
+        <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center border border-white/20">
+          <svg class="w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium text-white truncate" id="user-name">Admin User</p>
+          <p class="text-xs text-slate-400 truncate">Security Command</p>
+        </div>
+      </div>
+      <button id="logout-btn" class="w-full text-left text-sm text-red-400 hover:text-red-300 mt-2 px-2 py-1 rounded hover:bg-red-500/10 transition-colors">Sign Out</button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+    <!-- Top Header -->
+    <header class="h-16 flex items-center justify-between px-4 md:px-8 border-b border-white/5 backdrop-blur-md bg-obsidian/80 z-20 shrink-0">
+      <div class="flex items-center gap-4 flex-1">
+        <!-- Mobile Menu Toggle -->
+        <button class="md:hidden text-slate-400 hover:text-white p-1" onclick="openSidebar()">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
+        <div class="relative w-full max-w-sm hidden md:block">
+          <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          <input type="text" placeholder="Search incidents, assets, or personnel..." class="w-full bg-slate-900/50 border border-white/10 rounded-full pl-10 pr-4 py-1.5 text-sm text-slate-300 focus:outline-none focus:border-electric focus:ring-1 focus:ring-electric transition-colors">
+        </div>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+          <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+          <span class="text-xs font-medium text-emerald-400">System Nominal</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Scrollable Content -->
+    <div class="flex-1 overflow-y-auto p-4 md:p-8 relative">
+      
+      <!-- KPI Cards -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8 shrink-0">
+        <div class="glass-card p-5">
+          <h4 class="text-slate-400 text-xs md:text-sm font-medium mb-1">Total Incidents</h4>
+          <div class="flex items-end gap-3">
+            <span id="kpi-total" class="text-2xl md:text-3xl font-bold text-white">--</span>
+          </div>
+        </div>
+        <div class="glass-card p-5 relative overflow-hidden">
+          <div class="absolute right-0 bottom-0 opacity-20 w-24 h-24 bg-red-500 rounded-full blur-[40px]"></div>
+          <h4 class="text-slate-400 text-xs md:text-sm font-medium mb-1">Critical Hazards</h4>
+          <div class="flex items-end gap-3">
+            <span id="kpi-critical" class="text-2xl md:text-3xl font-bold text-red-400">--</span>
+          </div>
+        </div>
+        <div class="glass-card p-5 relative overflow-hidden">
+          <div class="absolute right-0 bottom-0 opacity-20 w-24 h-24 bg-electric rounded-full blur-[40px]"></div>
+          <h4 class="text-slate-400 text-xs md:text-sm font-medium mb-1">Active Investigations</h4>
+          <div class="flex items-end gap-3">
+            <span id="kpi-active" class="text-2xl md:text-3xl font-bold text-electric">--</span>
+          </div>
+        </div>
+        <div class="glass-card p-5">
+          <h4 class="text-slate-400 text-xs md:text-sm font-medium mb-1">Avg Resolution Time</h4>
+          <div class="flex items-end gap-3">
+            <span id="kpi-avg-time" class="text-2xl md:text-3xl font-bold text-white">--</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col md:flex-row gap-6 md:gap-8 mb-8">
+        <!-- Incidents List -->
+        <div class="flex-1 glass-card flex flex-col" style="min-height: 400px; max-height: 600px;">
+          <div class="p-6 border-b border-white/5 flex justify-between items-center bg-slate-900/30 rounded-t-xl">
+            <h3 class="text-lg font-semibold text-white">Incident Orchestration</h3>
+            <div class="flex gap-2">
+              <select id="filter-severity" class="bg-slate-900 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-slate-300 focus:outline-none focus:border-electric">
+                <option value="">All Priorities</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+                <option value="Critical">Critical</option>
+              </select>
+              <button id="refresh-btn" class="btn-ghost !py-1.5 !px-3 border border-white/10 text-sm flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                Sync
+              </button>
+            </div>
+          </div>
+          <div id="admin-error" class="hidden m-4 p-3 rounded bg-red-500/10 border border-red-500/20 text-red-400 text-sm"></div>
+          <div id="incident-queue" class="flex-1 overflow-y-auto p-4 space-y-4">
+            <div class="text-center py-10 text-slate-500">Loading orchestrations...</div>
+          </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="w-full md:w-80 flex flex-col gap-6 shrink-0">
+          <!-- Pinned Locations -->
+          <div class="glass-card flex flex-col p-4" style="height: 240px;">
+            <div class="flex items-center justify-between mb-3 shrink-0">
+              <h3 class="text-sm font-semibold text-slate-300">Pinned Locations</h3>
+              <span class="text-xs text-slate-500 bg-slate-800 px-2 py-0.5 rounded-full" id="pinned-count">0 sites</span>
+            </div>
+            <div id="pinned-locations-list" class="flex-1 overflow-y-auto space-y-2 pr-1">
+              <p class="text-slate-500 text-xs italic pt-4 text-center">No location-tagged incidents yet.</p>
+            </div>
+          </div>
+          <!-- Threat Vectors -->
+          <div class="glass-card flex flex-col p-4" style="height: 220px;">
+            <h3 class="text-sm font-semibold text-slate-300 mb-3 shrink-0">Threat Vectors</h3>
+            <div class="flex-1" style="position:relative; min-height:0;">
+              <canvas id="trendChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Users Directory -->
+      <div id="users-directory-panel" class="glass-card p-6 mb-8">
+        <h3 class="text-lg font-semibold text-white mb-2">Personnel Roster</h3>
+        <p class="text-sm text-slate-400 mb-6">Active verified identities on Resolv</p>
+        <div id="users-directory" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="text-slate-500 text-sm">Initializing directory protocol...</div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/admin.js"></script>
+  <script>
+    function openSidebar() {
+      document.getElementById('sidebar').classList.remove('-translate-x-full');
+      document.getElementById('sidebar-overlay').classList.remove('hidden');
+    }
+    function closeSidebar() {
+      document.getElementById('sidebar').classList.add('-translate-x-full');
+      document.getElementById('sidebar-overlay').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>
