@@ -125,6 +125,8 @@ SE Project/
 ├── README.md              ← This file
 ├── package.json           ← Dependencies and npm scripts
 ├── .env                   ← Settings (port, JWT secret, Supabase keys)
+├── api.js                 ← Serverless entry point (for Vercel)
+├── vercel.json            ← Vercel deployment configuration
 ├── public/                ← Frontend (what you see in the browser)
 │   ├── index.html         ← Sign-in / Sign-up page
 │   ├── report.html        ← Employee reporting page
@@ -132,12 +134,17 @@ SE Project/
 │   ├── css/styles.css     ← Built Tailwind CSS (do not edit directly)
 │   ├── css/input.css      ← Tailwind CSS entry point
 │   └── js/                ← Frontend logic (api.js, map-picker.js, admin.js, …)
-└── src/                   ← Backend (server code)
-    ├── server.js          ← Starts the app & seeds database
-    ├── app.js             ← Express app setup
-    ├── routes/            ← auth.js, incidents.js (w/ multer), geocode.js
-    ├── middleware/        ← auth.js (JWT authentication)
-    └── data/store.js      ← Supabase DB interaction
+├── src/                   ← Backend (server code)
+│   ├── server.js          ← Starts the app & seeds database
+│   ├── app.js             ← Express app setup
+│   ├── routes/            ← auth.js, incidents.js (w/ multer), geocode.js
+│   ├── middleware/        ← auth.js (JWT authentication)
+│   └── data/store.js      ← Supabase DB interaction
+└── scripts/               ← Standalone database & utility scripts
+    ├── add_column.js
+    ├── check_users.js
+    ├── create_bucket.js
+    └── reset_passwords.js
 ```
 
 ---
@@ -172,6 +179,19 @@ SE Project/
 ### Supabase (Database & Storage)
 - **PostgreSQL**: Stores `users`, `incidents`, and `incident_logs`.
 - **Storage**: Handles `evidence` file uploads.
+
+---
+
+## Deployment (Vercel)
+
+This application is configured for seamless deployment to **Vercel** using Serverless Functions.
+
+1. Connect your GitHub repository to Vercel.
+2. Under **Build and Output Settings**, set:
+   - **Build Command**: `npm run build:css`
+   - **Output Directory**: `public`
+3. Under **Environment Variables**, add `SUPABASE_URL`, `SUPABASE_KEY`, and `JWT_SECRET`.
+4. Click Deploy. Vercel will use `vercel.json` and `api.js` to automatically map your Express backend into a highly available serverless function!
 
 ---
 
